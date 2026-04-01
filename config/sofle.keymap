@@ -56,7 +56,7 @@
 
         raycast {
             bindings = <&kp LG(SPACE)>;
-            key-positions = <19 20>;
+            key-positions = <25 28>;
         };
     };
 
