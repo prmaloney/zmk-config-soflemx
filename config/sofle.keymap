@@ -53,6 +53,11 @@
             bindings = <&kp ESCAPE>;
             key-positions = <25 41>;
         };
+
+        raycast {
+            bindings = <&kp LG(SPACE)>;
+            key-positions = <19 20>;
+        };
     };
 
     behaviors {
