@@ -4,7 +4,7 @@ set -e
 
 echo "Pushing to remote..."
 PREV_RUN_ID=$(gh run list --limit 1 --json databaseId -q '.[0].databaseId')
-git push
+git push --force-with-lease
 
 # Wait for a new run to be triggered
 echo "Waiting for new build to start..."
