@@ -30,6 +30,7 @@ flash() {
   wait_for_mount
   echo "Flashing..."
   cp "$LATEST/$file" /Volumes/NICENANO/ 2>/dev/null || true
+  diskutil eject /Volumes/NICENANO 2>/dev/null || true
   wait_for_unmount
   echo "Done."
 }
