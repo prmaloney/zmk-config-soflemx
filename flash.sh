@@ -26,10 +26,10 @@ flash() {
   local file="$1"
   local label="$2"
   echo "\n$label"
-  echo "Put the controller into bootloader mode (double-tap reset)..."
+  read -r "?Put the controller into bootloader mode (double-tap reset), then press Enter..."
   wait_for_mount
   echo "Flashing..."
-  cp "$LATEST/$file" /Volumes/NICENANO/ 2>/dev/null || true
+  cp "$LATEST/$file" /Volumes/NICENANO/
   diskutil eject /Volumes/NICENANO 2>/dev/null || true
   wait_for_unmount
   echo "Done."
