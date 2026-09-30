@@ -29,7 +29,20 @@ flash() {
   read -r "?Put the controller into bootloader mode (double-tap reset), then press Enter..."
   wait_for_mount
   echo "Flashing..."
-  cp "$LATEST/$file" /Volumes/NICENANO/
+  # The board reboots the instant the uf2 finishes writing, so cp often dies on
+  # the trailing extended-attribute write with "Device not configured" even
+  # though the firmware landed. -X skips xattrs entirely; the drive going away
+  # is the real success signal, so only treat a failure as fatal if it is still
+  # mounted afterwards.
+  local err
+  if ! err=$(cp -X "$LATEST/$file" /Volumes/NICENANO/ 2>&1); then
+    sleep 2
+    if [[ -d /Volumes/NICENANO ]]; then
+      echo "Copy failed and /Volumes/NICENANO is still mounted:"
+      echo "$err"
+      return 1
+    fi
+  fi
   diskutil eject /Volumes/NICENANO 2>/dev/null || true
   wait_for_unmount
   echo "Done."
