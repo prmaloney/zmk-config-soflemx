@@ -18,14 +18,6 @@
 
 &right_encoder { steps = <60>; };
 
-// Etch-a-sketch mode turns each encoder detent into a short hold of &mmv. The
-// stock 300ms speed ramp means a hold that short barely moves the cursor, so
-// run mouse movement at constant speed instead. Nothing else binds &mmv.
-&mmv {
-    time-to-max-speed-ms = <0>;
-    acceleration-exponent = <0>;
-};
-
 
 #define BASE 0
 #define LOWER 1
@@ -89,17 +81,6 @@
             #binding-cells = <0>;
             continue-list = <POUND MINUS BACKSPACE UNDERSCORE>;
         };
-
-        // Drives &mmv from an encoder. tap-ms is how long each detent holds the
-        // movement, so detent distance is the MOVE_X/MOVE_Y value times 25ms.
-        // Raising tap-ms moves further per detent but queues up and lags on a
-        // fast spin, since the queue holds each detent serially.
-        enc_mmv: enc_mmv {
-            compatible = "zmk,behavior-sensor-rotate-var";
-            #sensor-binding-cells = <2>;
-            bindings = <&mmv>, <&mmv>;
-            tap-ms = <25>;
-        };
     };
 
     keymap {
@@ -112,22 +93,18 @@
             // |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |       |
             // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   | BKSPC |
             // |  TAB  |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-            // | SHIFT |  Z  |  X  |  C   |  V   |  B   |  LCLK  |  | RCLK  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
+            // | SHIFT |  Z  |  X  |  C   |  V   |  B   |  MUTE  |  |       |  N   |  M    |  ,    |  .   |   /   | SHIFT |
             //               | ALT | CTRL  | GUI | BSPC/LOWER|  ESC |  | ENTER | SPC/RAISE| GUI  | CTRL   | ALT  |
 
             bindings = <
 &gresc            &kp N1  &kp N2    &kp N3    &kp N4     &kp N5                                     &kp N6     &kp N7     &kp N8     &kp N9    &kp N0    &kp MINUS
 &kp TAB           &kp Q   &kp W     &kp E     &kp R      &kp T                                      &kp Y      &kp U      &kp I      &kp O     &kp P     &kp BSPC
 &kp LEFT_SHIFT    &kp A   &kp S     &kp D     &kp F      &kp G                                      &kp H      &kp J      &kp K      &kp L     &kp SEMI  &kp SQT
-&kp LS(LC(LA(LGUI)))  &kp Z   &kp X     &kp C     &kp V      &kp B      &mkp LCLK     &mkp RCLK         &kp N      &kp M      &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
+&kp LS(LC(LA(LGUI)))  &kp Z   &kp X     &kp C     &kp V      &kp B      &td_mute      &td_play          &kp N      &kp M      &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
                           &kp LALT  &kp LCTRL  &kp LGUI  &lt RAISE BSPC  &kp ESC     &kp ENTER     &lt LOWER SPACE  &kp RGUI  &kp RCTRL   &kp RALT
             >;
 
-            // Etch-a-sketch. Left knob draws horizontally, right knob
-            // vertically, both clockwise for right and up.
-            sensor-bindings =
-                <&enc_mmv MOVE_X(700) MOVE_X(-700)>,
-                <&enc_mmv MOVE_Y(-700) MOVE_Y(700)>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
 
         lower_layer {
